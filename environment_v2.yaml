@@ -234,5 +234,5 @@ dependencies:
     - torch==0.4.1.post2
     - torchfcn==1.9.0
     - tqdm==4.28.1
-prefix: /home/roserustowicz/anaconda3/envs/croptype
+prefix: /home/ubuntu/anaconda3/envs/croptype
 
