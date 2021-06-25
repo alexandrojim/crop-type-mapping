@@ -1,6 +1,6 @@
 import os
 import argparse
-
+import shutil
 
 def rename(old_fname, tif_content, num_digits, dry_run, ftype, country):
     """
@@ -11,7 +11,8 @@ def rename(old_fname, tif_content, num_digits, dry_run, ftype, country):
     where ### corresponds to a grid ID, and can vary from # to ##### 
     """
     fname_split = old_fname.split('_')
-    
+    print(old_fname)
+
     if tif_content == 'mask':
         if ftype == 'tif':
             assert '.tif' in fname_split[-1]
@@ -49,8 +50,25 @@ def get_fnames(directory, ftype):
     elif ftype == 'npy':
         return [os.path.join(directory, f) for f in os.listdir(directory) if f.endswith('.npy') or f.endswith('.json')]
 
-def main(directory, tif_content, num_digits, dry_run, ftype, country):
+def copy_imgs_out(directory, flagCpy):
+    if flagCpy:
+        dirs4imgs = sorted(os.listdir(directory))
+        #print(dirs4imgs)
+        dirs4imgs = dirs4imgs[3:]
+        #print(dirs4imgs)
+        for i in dirs4imgs:
+            print(i)
+            original = directory + '/' + i + '/labels.tif'
+            target = directory + '/alldata/' + i + '.tif'
+            shutil.copyfile(original, target)
+    else:
+        print('Images were copied to alldata/')
+
+def main(directory, tif_content, num_digits, dry_run, ftype, country, flagCpy):
+    copy_imgs_out(directory, flagCpy)
+    directory = directory + '/alldata'
     fnames = get_fnames(directory, ftype)
+    print(fnames[1:5])
     for f in fnames:
         rename(f, tif_content, num_digits, dry_run, ftype, country)    
 
@@ -78,7 +96,11 @@ if __name__ == '__main__':
         help='Defines type of data you want to rename (options: "tif", "npy")')
     parser.add_argument('--country', type=str, default='ghana',
         help='Country data is from (options: "tanzania", "ghana", "southsudan)')
+
+    parser.add_argument('--flagCpy', dest='flagCpy', action='store_true',
+        help='Copy images from each labeled folder to the directory and change its name.')
+
     args = parser.parse_args()
 
-    main(args.dir, args.tif_content, args.num_digits, args.dry_run, args.ftype, args.country)
+    main(args.dir, args.tif_content, args.num_digits, args.dry_run, args.ftype, args.country, args.flagCpy)
 
