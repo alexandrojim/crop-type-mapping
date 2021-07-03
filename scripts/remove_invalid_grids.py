@@ -46,6 +46,13 @@ def get_empty_grids(home, countries, sources, verbose, ext, lbl_dir):
 
         delete_me = []
         for source in sources:
+            # Check!
+            cur_path = os.path.join(home, country, source)
+            print(cur_path)
+            files = [os.path.join(cur_path, f) for f in os.listdir(cur_path) if f.endswith('.tif')]
+            files.sort()
+            print(files)
+            
             grid_numbers, source_files = get_grid_nums(home, country, source, ext)
 
             all_ids = set(empty_masks + grid_numbers)
@@ -99,10 +106,10 @@ def remove_irrelevant_files(home, countries, sources, delete_list, dry_run, ext)
 
 if __name__ == '__main__':
 
-    home = '/home/data'
+    home = '/mnt/data'
     countries = ['southsudan']
-    sources = ['s1_npy', 's2_npy']
-    lbl_dir = 'raster'
+    sources = ['s1', 's2']
+    lbl_dir = 'raster/alldata'
     verbose = 1
     dry_run = 1
     ext = 'tif'
